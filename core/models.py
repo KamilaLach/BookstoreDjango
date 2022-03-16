@@ -3,12 +3,38 @@ from django.conf import settings
 
 
 class Book(models.Model):
-    title = models.CharField(max_length=100)
-    author = models.CharField(max_length=50)
-    price = models.FloatField()
+    catchoice = [
+        ('education', 'Education'),
+        ('entertainment', 'Entertainment'),
+        ('comics', 'Comics'),
+        ('biography', 'Biography'),
+        ('history', 'History'),
+        ('novel', 'Novel'),
+        ('fantasy', 'Fantasy'),
+        ('thriller', 'Thriller'),
+        ('romance', 'Romance'),
+        ('scifi', 'Sci-Fi')
+    ]
+    title = models.CharField(max_length=70,
+                             blank=False,
+                             default='')
+    author = models.CharField(max_length=70,
+                              blank=False,
+                              default='')
+    category = models.CharField(max_length=30,
+                                choices=catchoice,
+                                default='education')
+    description = models.CharField(max_length=1000,
+                                   default='')
+    available = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['title']
+        verbose_name = 'Book'
+        verbose_name_plural = 'Books'
 
 
 class OrderBook(models.Model):

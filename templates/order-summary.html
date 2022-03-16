@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content  %}
+  <main>
+      <div class="container">
+
+          <div class="table-responsive">
+              <h1>Your Order Summary</h1>
+              <table class="table">
+                  <thead>
+                      <tr>
+                          <th scope="col"></th>
+                          <th scope="col">Product</th>
+                          <th scope="col">Price</th>
+                          <th scope="col">Quantity</th>
+                          <th scope="col">Price in total</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for order_item in object.items.all %}
+                          <tr>
+                              <th scope="row">{{ forloop.counter }}</th>
+                              <td>{{ order_item.item.title }}</td>
+                              <td>
+                                  {% if order_item.item.sale_price %}
+                                      <del>
+                                        ${{ order_item.item.price }}
+                                      </del>
+                                      <a class="mr-4"></a>
+                                      ${{ order_item.item.sale_price }}
+                                  {% else %}
+                                      ${{ order_item.item.price }}
+                                  {% endif %}
+                              </td>
+                              <td>
+                                  <a href="{% url 'core:remove-one-product-from-cart' order_item.item.slug %}"><i class="fas fa-minus mr-4"></i></a>
+                                  {{ order_item.quantity }}
+                                  <a href="{% url 'core:add-to-cart' order_item.item.slug %}"><i class="fas fa-plus ml-4"></i></a>
+
+                              </td>
+                              <td>
+                                  {% if order_item.item.sale_price %}
+                                      ${{ order_item.get_total_sale_item_price }}
+                                  {% else %}
+                                      ${{ order_item.get_total_item_price }}
+                                  {% endif %}
+                                  <a href="{% url 'core:remove-from-cart' order_item.item.slug %}">
+                                      <i class="fas fa-trash-alt float-right"></i>
+                                  </a>
+                              </td>
+
+                          </tr>
+                          {% empty %}
+                              <tr>
+                                  <td colspan="5" class="text-center">Your cart is empty</td>
+                                  <td colspan="5">
+                                      <a class="btn btn-primary float-left" href="/">Continue shopping</a>
+                                  </td>
+                              </tr>
+                      {% endfor %}
+                      {% if object.coupon %}
+                          <tr>
+                              <td colspan="4"><strong>Coupon</strong></td>
+                              <td><strong>-${{ object.coupon.amount }}</strong></td>
+                          </tr>
+                      {% endif %}
+                      {% if object.get_total %}
+                          <tr>
+                              <td colspan="4"><strong>Total price</strong></td>
+                              <td><strong>${{ object.get_total }}</strong></td>
+                          </tr>
+                          <tr>
+                              <td colspan="5">
+                                  <a class="btn btn-primary float-left" href="/">Continue shopping</a>
+                                  <a class="btn btn-warning float-right" href="/checkout">Buy</a>
+                              </td>
+                          </tr>
+                      {% endif %}
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </main>
+{% endblock content  %}
+
+
