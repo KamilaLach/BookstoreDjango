@@ -21,4 +21,5 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('', include('core.urls', namespace='core')),
 
+
 ]

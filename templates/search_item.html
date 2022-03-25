@@ -1,0 +1,20 @@
+{#{% extends "base.html" %}#}
+
+{% block content %}
+    {% if searched %}
+        <h1>
+            You searched for {{ searched }}
+        </h1>
+        <br/>
+        {% for book in book %}
+            <a>{{ item }}</a> for<br/>
+        {% endfor %}
+    {% else %}
+        <h1>
+            You forgot to search for an item
+        </h1>
+    {% endif %}
+
+{% endblock %}
+
+

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'crispy_forms',
 
     'allauth',
     'allauth.account',
@@ -60,7 +61,7 @@ ROOT_URLCONF = 'bookstoreDjango.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -140,3 +141,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SITE_ID = 1
+
+
+#CRISPY FORMS
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
