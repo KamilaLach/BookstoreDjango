@@ -12,6 +12,16 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 
+class UserIDView(APIView):
+    def get(self, request, *args, **kwargs):
+        resp = {
+            'is_admin': request.user.is_superuser,
+            'email': request.user.email,
+            'userID': request.user.id,
+        }
+        return render(request, "profile.html", resp)
+
+
 def homepage(request):
     return render(request, "home-page.html")
 

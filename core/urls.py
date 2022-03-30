@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import book_list, homepage, OrderSummaryView, remove_from_cart, add_to_cart, search_item, filter_view
+from .views import book_list, homepage, UserIDView, OrderSummaryView, remove_from_cart, add_to_cart, search_item, filter_view
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -14,6 +14,7 @@ urlpatterns = [
     path('add-to-cart/<slug>/', add_to_cart, name='add-to-cart'),
     path('all-books/search-item/', search_item, name='search-item'),
     path('all-books/filter-items/', filter_view, name='filter-items'),
+    path('profile', UserIDView.as_view(), name='profile'),
 ]
 
 if settings.DEBUG:
