@@ -1,5 +1,8 @@
 from django.urls import path
-from .views import book_list, homepage, UserIDView, OrderSummaryView, remove_from_cart, add_to_cart, search_item, filter_view
+
+from . import views
+from .views import book_list, homepage, UserIDView, OrderSummaryView, remove_from_cart, add_to_cart, search_item, \
+    filter_view, add_book, delete_book
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -15,10 +18,8 @@ urlpatterns = [
     path('all-books/search-item/', search_item, name='search-item'),
     path('all-books/filter-items/', filter_view, name='filter-items'),
     path('profile', UserIDView.as_view(), name='profile'),
-]
+    path('book/create/', add_book, name='book-create'),
+    # path('book/update/', BookUpdateView.as_view(), name='book-update'),
+    path('book/delete/<slug>/', delete_book, name='book-delete'),
 
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL,
-                          document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

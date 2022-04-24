@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{#{% load crispy_forms_tags %}#}
+{% load widget_tweaks %}
+
+{% block content  %}
+
+    <div class="container">
+        <form method="post" novalidate enctype="multipart/form-data">
+          {% csrf_token %}
+
+          {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field }}
+          {% endfor %}
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+              {% for error in form.non_field_errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% for field in form.visible_fields %}
+            <div class="form-group">
+              {{ field.label_tag }}
+
+              {% if form.is_bound %}
+                {% if field.errors %}
+                  {% render_field field class="form-control is-invalid" %}
+                  {% for error in field.errors %}
+                    <div class="invalid-feedback">
+                      {{ error }}
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  {% render_field field class="form-control is-valid" %}
+                {% endif %}
+              {% else %}
+                {% render_field field class="form-control" %}
+              {% endif %}
+
+              {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+              {% endif %}
+            </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+
+
+{#    <div class="hideable_shipping_form">#}
+{#        <div class="md-form mb-5">#}
+{#            <input type='text' placeholder='this title' id='title' name='title' class='form-control' />#}
+{#            <label for="title" class="">Title</label>#}
+{#        </div>#}
+{#        <div class="md-form mb-5">#}
+{#            <input type='text' placeholder='this autor' id='author' name='author' class='form-control' />#}
+{#            <label for="author" class="">Author</label>#}
+{#        </div>#}
+{#        <div class="row">#}
+{#        <div class="col-lg-4 col-md-12 mb-4">#}
+{#        <label for="country">Country</label>#}
+{#        {{ form.shipping_country }}#}
+{#        <div class="invalid-feedback">#}
+{#          Please select a valid country.#}
+{#        </div>#}
+{#        </div>#}
+{#        <div class="col-lg-4 col-md-6 mb-4">#}
+{#        <label for="shipping_zip">Zip</label>#}
+{#        <input type='text' placeholder='Zip code' id='shipping_zip' name='shipping_zip' class='form-control' />#}
+{#        <div class="invalid-feedback">#}
+{#          Zip code required.#}
+{#        </div>#}
+{#        </div>#}
+{#        </div>#}
+{#        <div class="custom-control custom-checkbox">#}
+{#        <input type="checkbox" class="custom-control-input" name="same_billing_address" id="same_billing_address">#}
+{#        <label class="custom-control-label" for="same_billing_address">Billing address is my shipping address</label>#}
+{#        </div>#}
+{#        <div class="custom-control custom-checkbox">#}
+{#        <input type="checkbox" class="custom-control-input" name="set_default_shipping" id="set_default_shipping">#}
+{#        <label class="custom-control-label" for="set_default_shipping">Set my shipping address as default</label>#}
+{#        </div>#}
+{#    </div>#}
+
+{% endblock content %}

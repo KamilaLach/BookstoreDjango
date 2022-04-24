@@ -6,81 +6,85 @@
   <main>
     <div class="container">
 
-      <!--Navbar-->
-{#      <nav class="navbar navbar-expand-lg navbar-dark mt-3 mb-5" style="background-color: gray">#}
-{##}
-{#        <!-- Navbar brand -->#}
-{#        <span class="navbar-brand">List of all books</span>#}
-{##}
-{#        <!-- Collapse button -->#}
-{#        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"#}
-{#          aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">#}
-{#          <span class="navbar-toggler-icon"></span>#}
-{#        </button>#}
-{##}
-{#        <!-- Collapsible content -->#}
-{#        <div class="collapse navbar-collapse" id="basicExampleNav">#}
-{##}
-{#          <!-- Links -->#}
-{#          <ul class="navbar-nav mr-auto">#}
-{#            <li class="nav-item active">#}
-{#              <a class="nav-link" href="#">All#}
-{#                <span class="sr-only">(current)</span>#}
-{#              </a>#}
-{#            </li>#}
-{#            <li class="nav-item">#}
-{#              <a class="nav-link" href="#">Shirts</a>#}
-{#            </li>#}
-{#            <li class="nav-item">#}
-{#              <a class="nav-link" href="#">Sport wears</a>#}
-{#            </li>#}
-{#            <li class="nav-item">#}
-{#              <a class="nav-link" href="#">Outwears</a>#}
-{#            </li>#}
-{##}
-{#          </ul>#}
-{#          <!-- Links -->#}
-{##}
-{#          <form class="form-inline" method="GET" action=".">#}
-{#            <div class="md-form my-0">#}
-{#              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">#}
-{#            <input class="form-control py-2 border-right-0 border" type="search" name="title_contains" placeholder="Title contains..." />#}
-{#                    <span class="input-group-append">#}
-{#                        <div class="input-group-text bg-transparent">#}
-{#                            <i class="fa fa-search"></i>#}
-{#                        </div>#}
-{#                    </span>#}
-{#            </div>#}
-{#              <button type="submit" class="btn btn-primary">Search</button>#}
-{#          </form>#}
-{##}
-{#        </div>#}
-{##}
-{#          <div class="row">#}
-{#        <ul>#}
-{#          {% for book in queryset %}#}
-{#            <li>#}
-{#              {{ book.title }}#}
-{#              <span>Author: {{ book.author }}</span>#}
-{#              <span>#}
-{#                  Category: {{ book.category }}#}
-{#              </span>#}
-{#            </li>#}
-{#            <hr />#}
-{#          {% endfor %}#}
-{#        </ul>#}
-{#      </div>#}
-{#        <!-- Collapsible content -->#}
-{##}
-{#      </nav>#}
-      <!--/.Navbar-->
-
       <section class="text-center mb-4">
 
           <!--Grid row-->
             <div class="row wow fadeIn">
-                {% for book in books %}
-                    {% if book.available %}
+                {% if request.user.is_superuser == False %}
+                    {% for book in books %}
+                        {% if book.available %}
+                            <!--Grid column-->
+                            <div class="col-lg-12 col-md-12 mb-12">
+
+                                <!--Card-->
+                                <div class="card mb-3" >
+                                    <div class="row g-0">
+                                    <!--Card image-->
+                                      <div class="col-md-4" style="align-self: center">
+                                          {% if book.image %}
+                                            <img src="{{ book.image.url }}" alt="pic" class="img-fluid rounded-start"/>
+    {#                                      <a href="{{ book.get_absolute_url }}">#}
+    {#                                            <div class="mask rgba-white-slight"></div>#}
+    {#                                        </a>#}
+                                          {% endif %}
+                                      </div>
+                                    <!--Card image-->
+
+                                    <!--Card content-->
+                                        <div class="col-md-8">
+                                            <div class="card-body text-center">
+                                                <!--Category & Title-->
+
+                                                <h5>
+                                                    <strong>
+                                                        <a href="{{ item.get_absolute_url }}" class="dark-grey-text">
+                                                            {{ book.title }}
+                                                        </a>
+                                                    </strong>
+                                                </h5>
+                                                <a class="grey-text">
+                                                    <small>
+                                                        {{ book.get_category_display }}
+                                                    </small>
+                                                </a>
+
+                                                <div>
+                                                    {{ book.description }}
+                                                </div>
+                                                <div class="grey-text" style="float: right">
+                                                    {{ book.author }}
+                                                </div>
+
+                                                {% if request.user.is_superuser == False %}
+                                                    <a href="{{ book.get_add_to_cart_url}}" class="col-md-4" style="text-align:center; bottom: 0;">
+                                                        <button type="button" class="btn btn-outline-black btn-rounded" data-mdb-ripple-color="dark"
+                                                                style="text-align:center; bottom: 0; float: left">
+                                                            Borrow
+                                                        </button>
+                                                    </a>
+{#                                                {% else %}#}
+{#                                                    <a href="{% url 'core:book-delete' book.slug %}" class="col-md-4" style="text-align:center; bottom: 0;">#}
+{#                                                        <button type="button" class="btn btn-outline-alert btn-red" data-mdb-ripple-color="dark"#}
+{#                                                                style="text-align:center; bottom: 0; width: 90%; ">#}
+{#                                                            DELETE#}
+{#                                                        </button>#}
+{#                                                    </a>#}
+                                                {% endif %}
+                                            </div>
+                                  <!--Card content-->
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!--Card-->
+
+                            </div>
+                        <!--Grid column-->
+                        {% endif %}
+
+                    {% endfor %}
+                {% elif request.user.is_superuser %}
+                    {% for book in books %}
                         <!--Grid column-->
                         <div class="col-lg-12 col-md-12 mb-12">
 
@@ -89,10 +93,12 @@
                                 <div class="row g-0">
                                 <!--Card image-->
                                   <div class="col-md-4" style="align-self: center">
-                                      <img src="{{ book.image.url }}" alt="pic" class="img-fluid rounded-start"/>
+                                      {% if book.image %}
+                                        <img src="{{ book.image.url }}" alt="pic" class="img-fluid rounded-start"/>
 {#                                      <a href="{{ book.get_absolute_url }}">#}
 {#                                            <div class="mask rgba-white-slight"></div>#}
 {#                                        </a>#}
+                                      {% endif %}
                                   </div>
                                 <!--Card image-->
 
@@ -121,25 +127,23 @@
                                                 {{ book.author }}
                                             </div>
 
-                                            {% if request.user.is_superuser == False %}
-                                                <a href="{{ book.get_add_to_cart_url}}" class="col-md-4" style="text-align:center; bottom: 0;">
-                                                    <button type="button" class="btn btn-outline-black btn-rounded" data-mdb-ripple-color="dark"
-                                                            style="text-align:center; bottom: 0; float: left">
-                                                        Borrow
-                                                    </button>
-                                                </a>
-                                            {% endif %}
-
-
-            {#                                    <h4 class="font-weight-bold blue-text">#}
-            {#                                        <strong>$#}
-            {#                                            {% if book.sale_price %}#}
-            {#                                                {{ item.sale_price }}#}
-            {#                                            {% else %}#}
-            {#                                                {{ item.price }}#}
-            {#                                            {% endif %}#}
-            {#                                        </strong>#}
-            {#                                    </h4>#}
+                                            <div style="text-align:center; bottom: 0;">
+                                                {% if book.available %}
+                                                    <div class="btn btn-success btn-lg active" role="button" aria-pressed="true" style="text-align:center; bottom: 0; width: 90%; ">
+                                                        THIS BOOK IS NOT BORROWED
+                                                    </div>
+                                                    <a href="{% url 'core:book-delete' book.slug %}" class="col-md-4" style="text-align:center; bottom: 0;">
+                                                        <button type="button" class="btn btn-outline-alert btn-red" data-mdb-ripple-color="dark"
+                                                                style="text-align:center; bottom: 0; width: 90%; ">
+                                                            DELETE
+                                                        </button>
+                                                    </a>
+                                                {% else %}
+                                                    <div class="btn btn-red btn-lg active" role="button" aria-pressed="true" style="text-align:center; bottom: 0; width: 90%; ">
+                                                        THIS BOOK IS BORROWED - YOU CAN'T DELETE IT
+                                                    </div>
+                                                {% endif %}
+                                            </div>
                                         </div>
                               <!--Card content-->
                                     </div>
@@ -150,44 +154,15 @@
 
                         </div>
                     <!--Grid column-->
-                    {% endif %}
-                {% endfor %}
+
+                    {% endfor %}
+                {% endif %}
 
             </div>
             <!--Grid row-->
 
           </section>
 
-      {% if is_paginated %}
-      <nav class="d-flex justify-content-center wow fadeIn">
-        <ul class="pagination pg-blue">
-
-          {% if page_obj.has_previous %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-              <span class="sr-only">Previous</span>
-            </a>
-          </li>
-          {% endif %}
-
-          <li class="page-item active">
-            <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-
-          {% if page_obj.has_next %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-              <span class="sr-only">Next</span>
-            </a>
-          </li>
-          {% endif %}
-        </ul>
-      </nav>
-      {% endif %}
 
     </div>
   </main>

@@ -1,4 +1,3 @@
-{#{% load cart_template_tags %}#}
 
 <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
     <div class="container">
@@ -17,6 +16,17 @@
             </a>
           </li>
     </ul>
+    {% if request.user.is_authenticated %}
+        {% if request.user.is_superuser %}
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a style="color: black; margin-left: 1em" data-mdb-ripple-color="dark" href="/book/create/">
+                        Add book
+                    </a>
+                </li>
+            </ul>
+        {% endif %}
+    {% endif %}
         <!-- Collapse -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

@@ -1,15 +1,69 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views import View
+from django.views.generic import DeleteView, UpdateView, CreateView
 
+from .forms import BookForm
 from .models import Book, Order, OrderBook
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from . import forms
+
+
+#
+# class BookUpdateView(UpdateView):
+#     permission_classes = (IsAuthenticated,)
+#     model = Book
+#     fields = '__all__'
+#
+#
+# class BookDeleteView(DeleteView):
+#     permission_classes = (IsAuthenticated,)
+#     model = Book
+#     fields = '__all__'
+
+
+# @login_required
+@user_passes_test(lambda u: u.is_superuser)
+def add_book(request):
+    form = forms.BookForm()
+    if request.method == 'POST':
+        form = forms.BookForm(request.POST, request.FILES)
+        if form.is_valid():
+            title = form.cleaned_data.get('title')
+            author = form.cleaned_data.get('author')
+            category = form.cleaned_data.get('category')
+            slug = form.cleaned_data.get('slug')
+            description = form.cleaned_data.get('description')
+            image = form.cleaned_data.get('image')
+            available = form.cleaned_data.get('available')
+            created = Book.objects.create(title=title,
+                                          author=author,
+                                          category=category,
+                                          slug=slug,
+                                          description=description,
+                                          image=image,
+                                          available=available)
+            created.save()
+            messages.warning(request, "Book added")
+            return redirect('core:book-list')
+    else:
+        form = BookForm()
+    return render(request, 'book_form.html', {'form': form})
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def delete_book(request, slug):
+    book = get_object_or_404(Book, slug=slug)
+    book.delete()
+    messages.warning(request, "Book deleted")
+    return redirect('core:book-list')
 
 
 class UserIDView(APIView):
@@ -28,7 +82,8 @@ def homepage(request):
 
 def book_list(request):
     context = {
-        'books': Book.objects.filter(available=True),
+        # 'books': Book.objects.filter(available=True),
+        'books': Book.objects.all(),
         'paginate_by': 1
     }
     return render(request, "book_list.html", context)
@@ -175,7 +230,7 @@ def filter(request):
 
 
 def filter_view(request):
-    qs= filter(request)
+    qs = filter(request)
     context = {
         'queryset': qs
     }

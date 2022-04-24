@@ -27,7 +27,7 @@ class Book(models.Model):
     description = models.CharField(max_length=1000,
                                    default='')
     slug = models.SlugField()
-    image = models.ImageField()
+    image = models.ImageField(default=False, upload_to='media/')
     available = models.BooleanField(default=False)
 
     def __str__(self):
